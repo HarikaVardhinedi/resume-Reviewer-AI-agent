@@ -1,0 +1,159 @@
+{
+  "name": "career navigator live copy",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -640,
+        -240
+      ],
+      "id": "512dc6db-9ab0-4a9c-a437-4b70e60bd5b4",
+      "name": "When chat message received",
+      "webhookId": "d7e4dc39-900f-4491-94e2-760378b12c3d"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an AI Agent Called ‘Apple’ which can review a resume and provide inputs to the user. Always ask the user to copy paste their resume into chat before you begin any conversation with them.\nYour job is to orchestrate the activities between different agents and formulate a collective friendly response back to the user.\nYou should never research on your own, your job is only to call the right agents or tools for the specific purpose or in a sequence.\nThink carefully about which specific agent to be called as per the user’s request.\nDo not do your own research, ask specific tools to do it for you.\n-use the resume reviewer tool to review and query the resume, suggest improvements and feedback to the user.\n#Additional Information \nYou can’t answer any questions without the user’s resume."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -240,
+        -240
+      ],
+      "id": "8392dd47-a857-4553-937f-c0ff7f19dfd7",
+      "name": "career Advisor"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "d58796a9-5cf3-4b08-a13d-c36a32c4c658",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "tSiJnbBIusfm3Dcv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 30
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        -20
+      ],
+      "id": "66b132d6-0dc1-45d4-b4e4-504522a00d07",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "call this tool review the resume of the user",
+        "workflowId": {
+          "__rl": true,
+          "value": "SeXldwUsvvEJBcao",
+          "mode": "list",
+          "cachedResultName": "resume reviewer"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        20,
+        -20
+      ],
+      "id": "a5b74f98-fad0-4c24-8b5c-12c934f657ad",
+      "name": "resume reviewer agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "career Advisor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "career Advisor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "career Advisor",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "resume reviewer agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "career Advisor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cb697047-965f-4452-a888-4c31adf9e76d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9fd221d042a0e08b934826c03bf49181e8a0f93aa20403e3e0f709dffc60bd3e"
+  },
+  "id": "faxcQymrL3cyZ2lM",
+  "tags": [
+    {
+      "createdAt": "2025-05-21T06:59:46.709Z",
+      "updatedAt": "2025-05-21T06:59:46.709Z",
+      "id": "MzwtrstBoyu7fkSC",
+      "name": "AI Multi Agent"
+    }
+  ]
+}
